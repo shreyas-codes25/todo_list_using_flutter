@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class AuthForm extends StatefulWidget {
   @override
@@ -7,11 +10,43 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   @override
+  //variable declaration
   final _formKey = GlobalKey<FormState>();
   var _email ="";
   var _password="";
   var _username="";
-   bool isLoginPage=false;
+  bool isLoginPage=false;
+    //function 
+  startauthentication(){
+    final validity = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
+    
+    if(validity){
+      _formKey.currentState!.save();
+      submitform(_email,_password,_username);
+    }
+  }
+  
+  submitform(String email,String password,String username)async{
+    final auth = FirebaseAuth.instance;
+    UserCredential authResult;
+    try{
+      if(isLoginPage){
+        authResult= await auth.signInWithEmailAndPassword(email: email, password: password);
+      }else{
+       authResult = await auth.createUserWithEmailAndPassword(email: email, password: password);
+       String uid = authResult.user!.uid;
+       await FirebaseFirestore.instance.collection("users").doc(uid).set({
+         "username":username,
+         "email":email});
+      }
+
+    }on FirebaseAuthException catch(error){
+      var message = "An error occurred, please check your credentials!";
+    }
+  }
+  
+  //widget build
   Widget build(BuildContext context){
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -71,6 +106,7 @@ class _AuthFormState extends State<AuthForm> {
                     ),
                   SizedBox(height: 10,),
                   TextFormField(
+                    obscureText: true,
                       keyboardType: TextInputType.emailAddress,
                       key:ValueKey("password"),
                       decoration: const InputDecoration(
@@ -94,8 +130,42 @@ class _AuthFormState extends State<AuthForm> {
                   SizedBox(height: 10,),
 
 
+                 Container(
 
-                ],
+                   padding:const EdgeInsets.only(left: 80,right: 80),
+                   width: double.infinity,
+                   child: ElevatedButton(
+
+                       style: ElevatedButton.styleFrom(
+                         backgroundColor: Colors.blue,
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(10),
+                         )
+                       ),
+
+                     onPressed: (){},
+                     child: isLoginPage?Text("Login",style: TextStyle(fontSize: 20),)
+                         : Text("Submit",style: TextStyle(fontSize: 20),),
+
+                   ),
+
+                 ),
+                  SizedBox(height: 10,),
+
+                  Container(
+                    child:TextButton(
+
+                      child:isLoginPage?Text("Not a user?" ,style: TextStyle(color: Colors.blue),):Text("already a user?" , style:TextStyle(color: Colors.blue),),
+                      onPressed: (){
+                        setState(() {
+                          isLoginPage=!isLoginPage;
+                        });
+                      },
+                    ),
+                  ),
+                       
+
+                ],//end of children
 
               )
             ),
