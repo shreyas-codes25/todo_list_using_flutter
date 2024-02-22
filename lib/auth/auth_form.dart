@@ -143,7 +143,9 @@ class _AuthFormState extends State<AuthForm> {
                          )
                        ),
 
-                     onPressed: (){},
+                     onPressed: (){
+                         startauthentication();
+                         },
                      child: isLoginPage?Text("Login",style: TextStyle(fontSize: 20),)
                          : Text("Submit",style: TextStyle(fontSize: 20),),
 
