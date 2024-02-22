@@ -34,12 +34,21 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions:[ IconButton(
+          icon:Icon(Icons.logout),
+          onPressed: ()async {
+            await FirebaseAuth.instance.signOut();
+          },
+
+        ),
+        ],
         backgroundColor: Theme.of(context).secondaryHeaderColor,
         title: const Text(
           'todo list',
           style: TextStyle(
             color: Colors.black,
             fontFamily: "Times New Roman",
+
           ),
         ),
       ),

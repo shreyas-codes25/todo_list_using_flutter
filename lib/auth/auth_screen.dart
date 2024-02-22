@@ -13,11 +13,17 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:const Text('Authentication'),
-      backgroundColor: Colors.purpleAccent,
-
+      appBar: AppBar(title:const Text('Authentication',
+          style: TextStyle(color: Colors.black,
+          fontWeight:FontWeight.bold,
+           fontFamily: "Times New Roman",
+           fontStyle: FontStyle.italic,
+          ),
       ),
-      body: AuthForm()
+        backgroundColor: Colors.blue.shade100,
+      ),
+      body: AuthForm(),
+      backgroundColor: Colors.red.shade100,
     );
   }
 }
